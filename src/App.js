@@ -13,7 +13,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import ProductDetailPage from './features/product-list/components/ProductDetail';
+import ProductDetailPage from './features/product/components/ProductDetail';
 
 
 const router = createBrowserRouter([
