@@ -2402,6 +2402,26 @@
       "addresses": [],
       "role": "admin",
       "id": 3
+    },
+    {
+      "email": "fdsafds@gmail.com",
+      "password": "12",
+      "id": 4
+    },
+    {
+      "email": "uf@gmail.com",
+      "password": "12",
+      "id": 5
+    },
+    {
+      "email": "sdf@gmail.com",
+      "password": "12",
+      "id": 6
+    },
+    {
+      "email": "sdf@gmail.com",
+      "password": "12",
+      "id": 7
     }
   ],
   "cart": [
@@ -3124,4 +3144,4 @@
       "id": 11
     }
   ]
-  }
+}

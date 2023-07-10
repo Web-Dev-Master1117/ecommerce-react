@@ -25,31 +25,31 @@ const sortOptions = [
   { name: 'Price: High to Low', sort: 'price', order: 'desc', current: false },
 ]
 
-const filters = [
-  {
-    id: 'category',
-    name: 'Category',
-    options: categories,
-  },
-  {
-    id: 'brand',
-    name: 'Brands',
-    options: brands,
-  },
+// const filters = [
+//   {
+//     id: 'category',
+//     name: 'Category',
+//     options: categories,
+//   },
+//   {
+//     id: 'brand',
+//     name: 'Brands',
+//     options: brands,
+//   },
   
-  // {
-  //   id: 'size',
-  //   name: 'Size',
-  //   options: [
-  //     { value: '2l', label: '2L', checked: false },
-  //     { value: '6l', label: '6L', checked: false },
-  //     { value: '12l', label: '12L', checked: false },
-  //     { value: '18l', label: '18L', checked: false },
-  //     { value: '20l', label: '20L', checked: false },
-  //     { value: '40l', label: '40L', checked: true },
-  //   ],
-  // },
-]
+//   // {
+//   //   id: 'size',
+//   //   name: 'Size',
+//   //   options: [
+//   //     { value: '2l', label: '2L', checked: false },
+//   //     { value: '6l', label: '6L', checked: false },
+//   //     { value: '12l', label: '12L', checked: false },
+//   //     { value: '18l', label: '18L', checked: false },
+//   //     { value: '20l', label: '20L', checked: false },
+//   //     { value: '40l', label: '40L', checked: true },
+//   //   ],
+//   // },
+// ]
 
 // const filters = [
 //   {
@@ -496,6 +496,20 @@ export default function ProductList() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [page, setPage] = useState(1);
 
+  const filters = [
+    {
+      id: 'category',
+      name: 'Category',
+      options: categories,
+    },
+    {
+      id: 'brand',
+      name: 'Brands',
+      options: brands,
+    }
+  ];
+
+
 
 
   const handleFilter = (e,section,option) => {
@@ -812,12 +826,12 @@ function Pagination({page,setPage,handlePage,totalItems}){
           >
             Previous
           </a>
-          <div
+          <a
             href="#"
             className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Next
-          </div>
+          </a>
         </div>
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
           <div>
@@ -866,8 +880,8 @@ function ProductGrid(){
         
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <Link to='/product-detail'>
-            <div key={product.id} className="group relative border-solid border-2 border-blue-300 p-2">
+            <Link to={`/product-detail/${product.id}`} key={product.id}>
+            <div className="group relative border-solid border-2 border-blue-300 p-2">
               <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                 <img
                   src={product.thumbnail}
