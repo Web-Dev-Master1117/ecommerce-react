@@ -1,40 +1,14 @@
 import React, { useState,Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  increment,
-  incrementAsync,
-  selectCount,
+  deleteItemFromCartAsync,
   selectItems,
-  updateItemAsync,
+  updateCartAsync,
 } from './cartSlice';
 
 import {Link} from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-
-const products = [
-  {
-    id: 1,
-    name: 'Throwback Hip Bag',
-    href: '#',
-    color: 'Salmon',
-    price: '$90.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-    imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-  },
-  {
-    id: 2,
-    name: 'Medium Stuff Satchel',
-    href: '#',
-    color: 'Blue',
-    price: '$32.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-    imageAlt:
-      'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-  },
-]
 
 
 export default function Cart() {
@@ -46,16 +20,19 @@ export default function Cart() {
 
   const totalItems = items.reduce((total, item) => item.quantity + total, 0)
 
-  const handleQuantity = (e) => {
-    updateItemAsync({...item, quantity})
+  const handleQuantity = (e,item) => {
+    dispatch(updateCartAsync({...item, quantity: +e.target.value}))
   }
 
+  const handleRemove = (e, id) => {
+    dispatch(deleteItemFromCartAsync(id))
+  }
 
   return (
     <>
     <div className='mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8'>
-      <h2 className='text-4xl font-bold tracking-tight text-orange-400 text-left'>Cart</h2>
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+      <h2 className='text-4xl font-bold tracking-tight text-orange-400 text-left'>Cart</h2>
         <div className="flow-root">
           <ul role="list" className="-my-6 divide-y divide-gray-200">
             {items.map((item) => (
@@ -83,14 +60,17 @@ export default function Cart() {
                     <label htmlFor="qty" className="inline mr-4 text-lg font-medium leading-6 text-gray-900">
                       Qty:
                     </label> 
-                    <select onChange = {(e) => handleQuantity(e, item)}>
+                    <select onChange = {(e) => handleQuantity(e, item)} value={item.quantity}>
                       <option value='1'>1</option>
-                      <option value='2'>1</option>
+                      <option value='2'>2</option>
+                      <option value='3'>3</option>
+                      <option value='4'>4</option>
                     </select>
                     </div>
 
                     <div className="flex">
                       <button
+                        onClick={(e) => handleRemove(e, item.id)}
                         type="button"
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                       >
