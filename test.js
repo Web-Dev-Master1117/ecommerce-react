@@ -1838,3 +1838,46 @@ const categories =  [...new Set([...products.map(p=>p.category)])]
 
 categories.map(c=>({value:c, label:c.split('-').join(' '),checked:false}))
 
+
+
+
+
+// {
+//   "name": "react",
+//   "version": "1.0.0",
+//   "description": "React example starter project",
+//   "keywords": [
+//     "react",
+//     "starter"
+//   ],
+//   "main": "src/index.js",
+//   "dependencies": {
+//     "@headlessui/react": "1.7.15",
+//     "@heroicons/react": "2.0.18",
+//     "@reduxjs/toolkit": "1.9.3",
+//     "loader-utils": "3.2.1",
+//     "react": "18.2.0",
+//     "react-dom": "18.2.0",
+//     "react-hook-form": "7.45.1",
+//     "react-redux": "8.1.1",
+//     "react-router-dom": "6.14.1",
+//     "react-scripts": "5.0.1",
+//     "tailwindcss": "3.2.7"
+//   },
+//   "devDependencies": {
+//     "@babel/runtime": "7.13.8",
+//     "typescript": "4.1.3"
+//   },
+//   "scripts": {
+//     "start": "react-scripts start",
+//     "build": "react-scripts build",
+//     "test": "react-scripts test --env=jsdom",
+//     "eject": "react-scripts eject"
+//   },
+//   "browserslist": [
+//     ">0.2%",
+//     "not dead",
+//     "not ie <= 11",
+//     "not op_mini all"
+//   ]
+// }

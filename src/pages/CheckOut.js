@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link, Navigate} from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectItems, updateCartAsync, deleteItemFromCartAsync } from '../features/cart/cartSlice'
 import { checkUserAsync, selectLoggedInUser, updateUserAsync } from '../features/auth/authSlice'
 import {useForm} from 'react-hook-form'
+import { createOrder } from '../features/order/orderAPI'
+import { createOrderAsync, selectCurrentOrder } from '../features/order/orderSlice'
 
 const products = [
   {
@@ -36,6 +38,7 @@ function CheckOut() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true)
   const items = useSelector(selectItems)
+  const currentOrder = useSelector(selectCurrentOrder)
   const user = useSelector(selectLoggedInUser)
   const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0)
 
@@ -52,6 +55,8 @@ function CheckOut() {
     dispatch(deleteItemFromCartAsync(id))
   }
 
+
+
   const{
     register,
     handleSubmit,
@@ -60,11 +65,32 @@ function CheckOut() {
   } = useForm();
 
   const handleAddress = (e) => {
-    setSelectedAddress(e.target.value)
+    setSelectedAddress(user.addresses[e.target.value])
+  }
+
+  const handlePayment = (e) => {
+    setPaymentMethod(e.target.value)
+  }
+
+  const handleOrder = (e) => {
+    const order = {
+                    items, 
+                    totalAmount, 
+                    totalItems, 
+                    user, 
+                    paymentMethod, 
+                    selectedAddress,
+                    status: 'pending',
+                }
+
+    dispatch(createOrderAsync(order))
   }
 
 
     return (
+        <>
+        {!items.length && <Navigate to='/' replace={true}></Navigate>}
+        {currentOrder && <Navigate to={`/order-success/${currentOrder.id}`} replace={true}></Navigate>}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-x-8 gap-y-10  lg:grid-cols-5 ">
                 <div className="lg:col-span-3 bg-white px-4 py-2">
@@ -219,7 +245,7 @@ function CheckOut() {
                                                     onChange={handleAddress}
                                                     name='address'
                                                     type='radio'
-                                                    value={address}
+                                                    value={index}
                                                     className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600' />
                                                 <div className="min-w-0 flex-auto">
                                                     <p className="text-sm font-semibold leading-6 text-gray-900">{address.name}</p>
@@ -245,7 +271,10 @@ function CheckOut() {
                                                 <input
                                                     id="cash"
                                                     name="payments"
+                                                    onClick={handlePayment}
+                                                    value = 'cash'
                                                     type="radio"
+                                                    checked= {paymentMethod === 'cash'}
                                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                 />
                                                 <label htmlFor="cash" className="block text-sm font-medium leading-6 text-gray-900">
@@ -256,6 +285,9 @@ function CheckOut() {
                                                 <input
                                                     id="card"
                                                     name="payments"
+                                                    onClick={handlePayment}
+                                                    checked={paymentMethod==='card'}
+                                                    value = 'card'
                                                     type="radio"
                                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                 />
@@ -338,11 +370,12 @@ function CheckOut() {
                             </div>
                             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                             <div className="mt-6">
-                                <Link to='/checkout'
+                                <div 
+                                    onClick={handleOrder}
                                     className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                                 >
-                                    Checkout
-                                </Link>
+                                    Order Now
+                                </div>
                             </div>
                             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                 <p>
@@ -364,6 +397,7 @@ function CheckOut() {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 
