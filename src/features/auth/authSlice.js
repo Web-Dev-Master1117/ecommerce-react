@@ -1,17 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { checkUser, createUser, updateUser } from './authAPI';
+import { checkUser, createUser, signOut } from './authAPI';
+import { updateUser } from '../user/userAPI';
 
 const initialState = {
   loggedInUser: null,
   status: 'idle',
   error: null,
 };
+// this is auth object
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
+
 export const createUserAsync = createAsyncThunk(
   'user/createUser',
   async (userData) => {
@@ -38,7 +36,15 @@ export const checkUserAsync = createAsyncThunk(
   }
 )
 
-export const counterSlice = createSlice({
+export const signOutAsync = createAsyncThunk(
+  'user/signOut',
+  async(userId) => {
+    const response = await signOut(userId)
+    return response.data;
+  }
+)
+
+export const authSlice = createSlice({
   name: 'user',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
@@ -66,7 +72,7 @@ export const counterSlice = createSlice({
         state.loggedInUser = action.payload;
       })
       .addCase(checkUserAsync.rejected, (state, action) => {
-        state.status = 'idle';
+        state.status = 'rejected';
         state.error = action.error;
       })
       .addCase(updateUserAsync.pending, (state) => {
@@ -76,14 +82,23 @@ export const counterSlice = createSlice({
         state.status = 'idle';
         state.loggedInUser = action.payload;
       })
+      .addCase(signOutAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(signOutAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.loggedInUser = null;
+      })
   },
 });
 
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUser;
+export const selectLoggedstatus = (state) => state.auth.status;
+// auth is the object
 export const selectError = (state) => state.auth.error;
 
-export const { increment } = counterSlice.actions;
+export const { increment } = authSlice.actions;
 
 
-export default counterSlice.reducer;
+export default authSlice.reducer;

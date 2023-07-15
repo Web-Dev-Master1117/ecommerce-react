@@ -34,7 +34,13 @@ export default function Signup() {
           noValidate
           className="space-y-6"
           onSubmit={handleSubmit((data) => {
-            dispatch(createUserAsync({ email: data.email, password: data.password, addresses: [] }))
+            dispatch(createUserAsync({ 
+              email: data.email, 
+              password: data.password, 
+              addresses: [],
+              role: 'user'
+            
+            }))
             console.log(data)
           })}>
           <div>
@@ -58,9 +64,9 @@ export default function Signup() {
                 Password
               </label>
               <div className="text-sm">
-                <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                {/* <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                   Forgot password?
-                </a>
+                </a> */}
               </div>
             </div>
             <div className="mt-2">

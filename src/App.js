@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Counter } from './features/counter/Counter';
 import './App.css';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
@@ -20,6 +19,16 @@ import { selectLoggedInUser } from './features/auth/authSlice';
 import { fetchItemsByUserIdAsync } from './features/cart/cartSlice';
 import PageNotFound from './pages/404';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import UserOrders from './features/user/components/UserOrders';
+import UserOrdersPage from './pages/UserOrdersPage';
+import UserProfile from './features/user/components/UserProfile'
+import UserProfilePage from './pages/UserProfilePage';
+import { fetchLoggedInUserAsync, selectUserInfo } from './features/user/userSlice';
+import Logout from './features/auth/components/Logout';
+import ForgetPasswordPage from './pages/ForgetPasswordPage';
+import AdminHome from './pages/AdminHome';
+import ProtectedAdmin from './features/auth/components/ProtectedAdmin';
+import AdminProductDetailPage from './pages/AdminProductDetailPage';
 
 
 const router = createBrowserRouter([
@@ -28,6 +37,13 @@ const router = createBrowserRouter([
     element:  <Protected>
                 <Home/>
               </Protected>
+  },
+  {
+    path: '/admin',
+    element: 
+    // <ProtectedAdmin>
+                <AdminHome/>
+            // </ProtectedAdmin>
   },
   {
     path: "/login",
@@ -54,8 +70,31 @@ const router = createBrowserRouter([
               </Protected>
   },
   {
+    path: '/admin/product-detail/:id',
+    element: 
+    // <ProtectedAdmin>
+                <AdminProductDetailPage/>
+            // </ProtectedAdmin>
+  },
+  {
     path: '/order-success/:id',
     element: <OrderSuccessPage/>,
+  },
+  {
+    path: '/orders',
+    element: <UserOrdersPage/>,
+  },
+  {
+    path: '/profile',
+    element: <UserProfilePage/>,
+  },
+  {
+    path: '/logout',
+    element: <Logout/>,
+  },
+  {
+    path: '/forget-password',
+    element: <ForgetPasswordPage/>
   },
   {
     path: '*',
@@ -66,11 +105,12 @@ const router = createBrowserRouter([
 function App() {
 
   const dispatch = useDispatch();
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
 
   useEffect(() => {
     if(user){
       dispatch(fetchItemsByUserIdAsync(user.id))
+      dispatch(fetchLoggedInUserAsync(user.id))
     }
   },[dispatch, user])
 
