@@ -231,7 +231,7 @@ export default function AdminProductList() {
               <div className="lg:col-span-3">
                 {/* Product list page */}
                 <div>
-                  <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">Add Product</button>
+                  <Link to="/admin/product-form" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">Add Product</Link>
                 </div>
                 <ProductGrid/>
               </div>
@@ -498,7 +498,7 @@ function ProductGrid(){
             </div>
             </Link>
               <div>
-                <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">Edit Product</button>
+                <Link to={`/admin/product-form/edit/${product.id}`} className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">Edit Product</Link>
               </div>
             </div>
           ))}
