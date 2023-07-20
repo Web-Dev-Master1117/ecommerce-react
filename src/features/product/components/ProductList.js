@@ -904,6 +904,9 @@ function ProductGrid(){
                 <p className="text-sm font-medium text-gray-400 line-through">${product.price}</p>
                 </div>
               </div>
+              {product.deleted && <div>
+                <p className='text-sm text-red-400'>Product Deleted</p>
+              </div>}
             </div>
             </Link>
           ))}

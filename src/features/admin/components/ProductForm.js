@@ -1,10 +1,11 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectBrands, selectCategories } from '../ProductSlice';
+import { fetchProductByIdAsync, selectBrands, selectCategories, selectedProductById } from '../ProductSlice';
 import {useForm} from 'react-hook-form'
-import { createProduct } from '../../product/ProductAPI';
-import { createProductAsync } from '../../product/ProductSlice';
+import { createProduct, fetchProductById } from '../../product/ProductAPI';
+import { clearSelectedProduct, createProductAsync, updateProductAsync } from '../../product/ProductSlice';
 import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 
 function ProductForm(){
@@ -13,25 +14,76 @@ function ProductForm(){
     const {
         register,
         handleSubmit,
+        setValue,
+        reset,
         formState: {errors},
     } = useForm();
     const dispatch = useDispatch()
     const params = useParams();
+    const selectedProduct = useSelector(selectedProductById)
+
+    useEffect(() => {
+        if(params.id){
+            dispatch(fetchProductByIdAsync(params.id))
+        }else{
+            dispatch(clearSelectedProduct());
+        }
+
+    },[params.id, dispatch])
+
+    useEffect(() => {
+        if(selectedProduct && params.id){
+            setValue('title', selectedProduct.title);
+            setValue('description', selectedProduct.description);
+            setValue('price', selectedProduct.price);
+            setValue('discountPercentage', selectedProduct.discountPercentage);
+            setValue('thumbnail', selectedProduct.thumbnail);
+            setValue('stock', selectedProduct.stock);
+            setValue('image1', selectedProduct.images[0]);
+            setValue('image2', selectedProduct.images[1]);
+            setValue('image3', selectedProduct.images[2]);
+            setValue('brand', selectedProduct.brand);
+            setValue('categories', selectedProduct.categories);
+        }        
+        
+    },[selectedProduct,params.id, setValue])
+
+    const handleDelete = () => {
+        const product = {...selectedProduct};
+        product.deleted = true;
+        dispatch(updateProductAsync(product));
+    }
+
 
     return(
         <>
     <form onSubmit={handleSubmit((data) => {
         console.log(data)
         const product = {...data};
-        product.images = [product.image1,product.image2,product.image3,product.thumbnail];
+        product.images = [
+            product.image1,
+            product.image2,
+            product.image3,
+            product.thumbnail
+        ];
         delete product['image1'];
         delete product['image2'];
         delete product['image3'];
         delete product['thumbnail'];
+        product.rating = 0;
+        product.price = +product.price;
+        product.discountPercentage = +product.discountPercentage;
+        product.stock = +product.stock;
 
-        
-
-        dispatch(createProductAsync(product))
+        if(params.id){
+            product.id = params.id;
+            product.rating = selectedProduct.rating || 0;
+            dispatch(updateProductAsync(product))
+            reset()
+        }else{
+            dispatch(createProductAsync(product))
+            reset()
+        }
 
     })}>
         <div className="space-y-12 bg-white p-12">
@@ -330,6 +382,11 @@ function ProductForm(){
                 <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
                 Cancel
                 </button>
+                {selectedProduct && <button 
+                onClick={handleDelete}
+                type="button" className="text-sm font-semibold leading-6 text-red-900">
+                Delete
+                </button>}
                 <button
                 type="submit"
                 className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

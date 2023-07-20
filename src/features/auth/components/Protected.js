@@ -12,11 +12,9 @@ function Protected({children}){
         //     return <Navigate to="/login" replace={true}></Navigate>;
         //   }
       
-        if(user && loadingStatus === 'loading'){
-          return (<h1>wait..</h1>) 
-        }else if(user && loadingStatus === 'idle'){
-          return children;
-        }else if(!user){
+        if(user && loadingStatus === 'idle'){
+          return  children; 
+        }else if(!user && loadingStatus === 'idle'){
           return <Navigate to="/login" replace={true}></Navigate>;
         }
       
