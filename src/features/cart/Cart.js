@@ -9,6 +9,7 @@ import {
 import {Link} from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { discountedPrice } from '../../app/constants';
 
 
 export default function Cart() {
@@ -16,7 +17,7 @@ export default function Cart() {
   const [open, setOpen] = useState(true)
   const items = useSelector(selectItems)
 
-  const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0)
+  const totalAmount = items.reduce((amount, item) => discountedPrice(item) * item.quantity + amount, 0)
 
   const totalItems = items.reduce((total, item) => item.quantity + total, 0)
 

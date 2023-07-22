@@ -8,6 +8,7 @@ import { checkUserAsync, selectLoggedInUser, updateUserAsync } from '../features
 import {useForm} from 'react-hook-form'
 import { createOrder } from '../features/order/orderAPI'
 import { createOrderAsync, selectCurrentOrder } from '../features/order/orderSlice'
+import { discountedPrice } from '../app/constants'
 
 const products = [
   {
@@ -40,7 +41,7 @@ function CheckOut() {
   const items = useSelector(selectItems)
   const currentOrder = useSelector(selectCurrentOrder)
   const user = useSelector(selectLoggedInUser)
-  const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0)
+  const totalAmount = items.reduce((amount, item) => discountedPrice(item) * item.quantity + amount, 0)
 
   const totalItems = items.reduce((total, item) => item.quantity + total, 0)
 
