@@ -22,6 +22,10 @@ export const createOrderAsync = createAsyncThunk(
   }
 );
 
+// createOrder is helper function or api call
+
+// second argument is payload creator
+
 export const updateOrderAsync = createAsyncThunk(
   'orders/updateOrder',
   async(order) => {
@@ -30,16 +34,18 @@ export const updateOrderAsync = createAsyncThunk(
   }
 )
 
+// updateOrderAsync is thunk action creator
+
 
 export const fetchAllOrdersAsync = createAsyncThunk(
   'orders/fetchAllOrders',
-  async (pagination) => {
-    const response = await fetchAllOrders(pagination);
+  async ({sort, pagination}) => {
+    const response = await fetchAllOrders(sort, pagination);
     return response.data;
   }
 )
 
-
+// second argument is payload creator
 
 // this first argument is action type and it created automatically by middleaware
 

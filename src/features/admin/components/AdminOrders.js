@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchAllOrdersAsync, selectOrders, selectTotalOrders } from "../../order/orderSlice";
 import { ITEMS_PER_PAGE } from "../../../app/constants"
 import { useDispatch, useSelector } from "react-redux";
-import {EyeIcon, PencilIcon} from '@heroicons/react/24/outline'
+import {EyeIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon} from '@heroicons/react/24/outline'
 import Pagination from "../../common/Pagination";
 
 
@@ -12,7 +12,7 @@ function AdminOrders(){
     const orders = useSelector(selectOrders);
     const totalOrders = useSelector(selectTotalOrders);
     const [editableOrderId, setEditableOrderId] = useState(-1)
-
+    const [sort, setSort] = useState({})
 
     const handleEdit = (order) => {
         setEditableOrderId(order.id)
@@ -26,6 +26,16 @@ function AdminOrders(){
         const updatedOrder = {...order, status: e.target.value}
         dispatch(updateOrderAsync(updatedOrder))
         setEditableOrderId(-1)
+    }
+
+    const handlePage = (page) => {
+        setPage(page)
+        
+    }
+
+    const handleSort = (sortOption) => {
+        const sort = {_sort: sortOption.sort, _order: sortOption.order}
+        setSort(sort)
     }
 
     const chooseColor = (status) => {
@@ -46,8 +56,9 @@ function AdminOrders(){
 
     useEffect(() => {
         const pagination = {_page: page, _limit: ITEMS_PER_PAGE};
-        dispatch(fetchAllOrdersAsync(pagination))
-    },[page, dispatch])
+
+        dispatch(fetchAllOrdersAsync({sort, pagination}))
+    },[dispatch, page, sort])
 
 
 
@@ -59,9 +70,26 @@ function AdminOrders(){
                         <table className="min-w-max w-full table-auto">
                             <thead>
                                 <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                    <th className="py-3 px-6 text-left">Order#</th>
+                                    <th className="py-3 px-6 text-left cursor-pointer"
+                                         onClick={e => 
+                                            handleSort({
+                                                        sort:'id',
+                                                        order:sort?._order === 'asc' ? 'desc' : 'asc',
+                                                        })} 
+                                    >Order# 
+                                        {sort._sort === 'id' && (
+                                            sort._order === 'asc' ? <ArrowUpIcon className="inline" /> : <ArrowDownIcon className="inline" />)} 
+                                    </th>
                                     <th className="py-3 px-6 text-left">Items</th>
-                                    <th className="py-3 px-6 text-center">Total Amount</th>
+                                    <th className="py-3 px-6 text-center cursor-pointer"   
+                                    onClick={e => handleSort({
+                                                        sort: 'totalAmount',
+                                                        order:sort?._order === 'asc' ? 'desc' : 'asc',
+                                                        })}
+                                         > Total Amount
+                                         {sort._sort === 'totalAmount' && (
+                                            sort._order === 'asc' ? <ArrowUpIcon className="inline" /> : <ArrowDownIcon className="inline" />)}
+                                    </th>
                                     <th className="py-3 px-6 text-center">Address</th>
                                     <th className="py-3 px-6 text-center">Status</th>
                                     <th className="py-3 px-6 text-center">Actions</th>
